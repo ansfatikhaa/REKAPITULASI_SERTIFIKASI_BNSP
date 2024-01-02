@@ -11,7 +11,7 @@ class Dashboard extends Controller
 {
     public function index()
     {
-        // X
+        // Xvv
         // Mengambil daftar program studi untuk dropdown
         $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
 
