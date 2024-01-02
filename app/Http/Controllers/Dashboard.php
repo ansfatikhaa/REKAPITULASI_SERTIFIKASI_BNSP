@@ -11,6 +11,7 @@ class Dashboard extends Controller
 {
     public function index()
     {
+        // X
         // Mengambil daftar program studi untuk dropdown
         $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
 
@@ -48,11 +49,10 @@ class Dashboard extends Controller
             ->whereYear('dtl_tanggal_mulai', $year)
             ->groupBy('pro_id')
             ->get();
-            
+
         $totalPeserta = rsm_trdetailskema::select(DB::raw('SUM(dtl_total_peserta) as total_peserta'))
-        ->whereYear('dtl_tanggal_mulai', $year)
-        ->first();
+            ->whereYear('dtl_tanggal_mulai', $year)
+            ->first();
         return response()->json($pesertaData);
     }
-  
 }
