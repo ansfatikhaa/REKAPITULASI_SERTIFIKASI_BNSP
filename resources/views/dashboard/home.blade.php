@@ -80,7 +80,7 @@
                         type: 'pie'
                     },
                     title: {
-                        text: "Grafik Keseluruhan Peserta Berdasarkan Prodi"
+                        text: "Keseluruhan Peserta Sertifikasi Berdasarkan Program Studi"
                     },
                     subtitle: {
                         text: '',

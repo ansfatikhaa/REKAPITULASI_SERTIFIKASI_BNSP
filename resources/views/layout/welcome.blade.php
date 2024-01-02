@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistem Rekapitulasi Sertifikasi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
 
@@ -24,7 +24,7 @@
     <link href="{{ asset('assets/Content/themes/base/jquery-ui.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/Styles/Style.css') }}" rel="stylesheet" />
 
-    <!-- <script src="{{ asset('assets/Scripts/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ asset('assets/Scripts/jquery-3.4.1.min.js') }}"></script>
     <script src="{{ asset('assets/Scripts/jquery-ui-1.12.1.min.js') }}"></script>
     <script src="{{ asset('assets/Plugins/sweetalert2/dist/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('assets/Plugins/fontawesome-free-5.11.2-web/js/fontawesome.min.js') }}"></script>
@@ -33,8 +33,6 @@
     <script src="{{ asset('assets/Scripts/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('assets/Plugins/MDB-Pro_4.14.1/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/Plugins/MDB-Pro_4.14.1/js/mdb.min.js') }}"></script>
-    <script src="{{ asset('assets/Plugins/Highcharts-7.2.1/code/highcharts.js') }}"></script>
-    <script src="{{ asset('assets/Plugins/Highcharts-7.2.1/code/highcharts-more.js') }}"></script> -->
 
     </script>
 
@@ -170,18 +168,17 @@
                 <div class="scrollstyle" style="overflow-y: auto; height: 100%;">
                     <ul class="list-group" style="font-size: 14px;">
                         <li class='list-group-item border border-0 panelauthenticationmobile' style='background-color: #FFFFC0;'>Hai, <b>yosep.setiawan (KARYAWAN)</b></li>
-                        <li class='list-group-item border border-0 hovermenu' style='cursor: pointer;' onclick="window.location.href='http://localhost/web_intra//Page_Logout.aspx';"><i class='fas fa-sign-out-alt' style='margin-right: 7px;'></i><b>Logout</b></li>
-                        <a href="{{url('dashboard/home')}}" style="color:black">
-                            <li class='list-group-item border border-0 hovermenu active' style='cursor: pointer;'><i class='fas fa-home' style='margin-right: 7px;'></i><b>Dashboard</b></li>
+                        <li class='list-group-item border border-0 hovermenu' style='cursor: pointer;'><i class='fas fa-sign-out-alt' style='margin-right: 7px;'></i><b>Logout</b></li>
+                        <a href="{{ url('dashboard/home') }}" style="color:black">
+                            <li class='list-group-item border border-0 hovermenu @if(request()->is(' dashboard/home')) active @endif' style='cursor: pointer;'><i class='fas fa-home' style='margin-right: 7px;'></i><b>Dashboard</b></li>
                         </a>
-                        <div class='accordion' id='accordionMenu'>
-                            <a href="{{url('skema')}}" style="color:black">
-                                <li class='list-group-item border border-0' style='cursor: pointer;'><b><i class="fa-solid fa-sitemap" style="margin-right: 7px;"></i>Skema</b></li>
-                            </a>
-                        </div>
-                        <li class='list-group-item border border-0 hovermenu' style='cursor: pointer;' onclick="window.location.href='http://localhost/web_intra//Page_Redirect_SSO.aspx';"><i class='fas fa-external-link-alt' style='margin-right: 7px;'></i><b>Halaman SSO</b></li>
+                        <a href="{{ url('skema') }}" style="color:black">
+                            <li class='list-group-item border border-0 hovermenu @if(request()->is(' skema')) active @endif' style='cursor: pointer;'><b><i class="fa-solid fa-sitemap" style="margin-right: 7px;"></i>Skema</b></li>
+                        </a>
+                        <li class='list-group-item border border-0 hovermenu' style='cursor: pointer;'><i class='fas fa-external-link-alt' style='margin-right: 7px;'></i><b>Halaman SSO</b></li>
                     </ul>
                 </div>
+
             </div>
         </div>
         <div class="col panelcontent panelcontentweb" style="font-size: 14px;">
