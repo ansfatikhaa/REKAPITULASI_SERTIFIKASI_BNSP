@@ -5,7 +5,7 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
-
+<!-- Bagian tampilan konten -->
 <div class="card-body">
     <div class="column">
         <h2>Keseluruhan Peserta Sertifikasi</h2>
@@ -14,13 +14,35 @@
         <div class="col-md-2 mb-2">
             <label for="year" class="form-label">Tahun:</label>
             <select id="year" name="year" class="form-select">
-                @php
+                <?php
                 $currentYear = date('Y');
                 for ($i = $currentYear; $i >= $currentYear - 5; $i--) {
-                echo "<option value='$i'>$i</option>";
+                    echo "<option value='$i'>$i</option>";
                 }
-                @endphp
+                ?>
             </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="prodi" class="form-label">Program Studi:</label>
+            <select id="prodi" name="prodi" class="form-select">
+                <?php
+                // Retrieve program study data from rsm_prodi table
+                use App\Models\rsm_msprodi;
+
+                $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
+
+                // Display options for program study dropdown
+                foreach ($prodiList as $key => $value) {
+                    echo "<option value='$key'>$value</option>";
+                }
+                ?>
+            </select>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a class="btn btn-primary rounded-pill waves-effect waves-light btn-modal" href="" style="padding: 10px 30px;">
+                Export
+            </a>
         </div>
     </div>
 
@@ -29,9 +51,14 @@
     </figure>
 </div>
 
+
+
 <script>
     function updateChart() {
+        // Mendapatkan nilai tahun yang dipilih dari dropdown
         var selectedYear = document.getElementById('year').value;
+        // Mengambil data dari URL '/getDataForYear/' + selectedYear menggunakan Fetch API
+        // kemudian mengolah data JSON yang diperoleh
         fetch('/getDataForYear/' + selectedYear)
             .then(response => response.json())
             .then(data => {
@@ -74,7 +101,7 @@
                     year: selectedYear,
                     color: colorsByProdi[item.pro_id] || '#CCCCCC' // Gunakan warna default jika tidak ada warna khusus
                 }));
-
+                // Konfigurasi grafik Highcharts
                 var chart = Highcharts.chart('container', {
                     chart: {
                         type: 'pie'
@@ -91,7 +118,7 @@
                             borderRadius: 5,
                             allowPointSelect: true,
                             innerSize: '50%',
-                            showInLegend: false,
+                            showInLegend: true,
                             cursor: 'pointer',
                             dataLabels: {
                                 enabled: true,
@@ -148,11 +175,39 @@
                 console.error('Error fetching data:', error);
             });
     }
-
+    // Menambahkan event listener untuk meng-update grafik saat dropdown tahun diubah
     document.getElementById('year').addEventListener('change', updateChart);
 
     // Inisialisasi grafik pada tahun pertama kali tampil
     updateChart();
+
+
+    // Fungsi untuk menampilkan modal
+    function showModal() {
+        var modal = document.getElementById("myModal");
+        var btn = document.querySelector('.btn');
+
+        // Ketika tombol "Hello" diklik, tampilkan modal
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Ketika tombol close di modal diklik, sembunyikan modal
+        var span = document.getElementsByClassName("close")[0];
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Jika pengguna mengklik di luar modal, tutup modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+
+    // Panggil fungsi untuk menampilkan modal saat dokumen dimuat
+    showModal();
 </script>
 
 @endsection
