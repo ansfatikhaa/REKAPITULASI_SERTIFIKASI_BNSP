@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportData;
 use Illuminate\Http\Request;
 use App\Models\rsm_trdetailskema;
 use App\Models\rsm_msprodi;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Dashboard extends Controller
 {
@@ -40,6 +42,21 @@ class Dashboard extends Controller
     }
 
 
+    // public function getDataForYear($year)
+    // {
+    //     $pesertaData = rsm_trdetailskema::select(
+    //         'pro_id',
+    //         DB::raw('SUM(dtl_total_peserta) as total_peserta')
+    //     )
+    //         ->whereYear('dtl_tanggal_mulai', $year)
+    //         ->groupBy('pro_id')
+    //         ->get();
+
+    //     $totalPeserta = rsm_trdetailskema::select(DB::raw('SUM(dtl_total_peserta) as total_peserta'))
+    //         ->whereYear('dtl_tanggal_mulai', $year)
+    //         ->first();
+    //     return response()->json($pesertaData);
+    // }
     public function getDataForYear($year)
     {
         $pesertaData = rsm_trdetailskema::select(
@@ -50,9 +67,12 @@ class Dashboard extends Controller
             ->groupBy('pro_id')
             ->get();
 
-        $totalPeserta = rsm_trdetailskema::select(DB::raw('SUM(dtl_total_peserta) as total_peserta'))
-            ->whereYear('dtl_tanggal_mulai', $year)
-            ->first();
         return response()->json($pesertaData);
+    }
+
+    public function export_excel(Request $request)
+    {
+        $selectedYear = $request->input('year'); // Mendapatkan tahun yang dipilih dari dropdown
+        return Excel::download(new ExportData($selectedYear), "Data_Sertifikasi_$selectedYear.xlsx");
     }
 }

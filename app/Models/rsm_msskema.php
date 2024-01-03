@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class rsm_msskema extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'rsm_msskema';
     protected $primaryKey = 'skm_id';
     public $timestamps = false;
@@ -21,4 +21,3 @@ class rsm_msskema extends Model
         return $this->hasMany(rsm_trdetailskema::class, 'skm_id', 'skm_id');
     }
 }
-

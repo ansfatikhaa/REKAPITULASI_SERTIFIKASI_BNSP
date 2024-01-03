@@ -8,8 +8,6 @@
 <!-- Bagian tampilan konten -->
 <div class="card-body">
     <div class="column">
-        <h2>Keseluruhan Peserta Sertifikasi</h2>
-        <h2>Berdasarkan Program Studi</h2>
         <!-- Dropdown for selecting year -->
         <div class="col-md-2 mb-2">
             <label for="year" class="form-label">Tahun:</label>
@@ -22,25 +20,9 @@
                 ?>
             </select>
         </div>
-        <div class="col-md-3 mb-3">
-            <label for="prodi" class="form-label">Program Studi:</label>
-            <select id="prodi" name="prodi" class="form-select">
-                <?php
-                // Retrieve program study data from rsm_prodi table
-                use App\Models\rsm_msprodi;
-
-                $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
-
-                // Display options for program study dropdown
-                foreach ($prodiList as $key => $value) {
-                    echo "<option value='$key'>$value</option>";
-                }
-                ?>
-            </select>
-        </div>
 
         <div class="col-md-3 mb-3">
-            <a class="btn btn-primary rounded-pill waves-effect waves-light btn-modal" href="" style="padding: 10px 30px;">
+            <a class="btn btn-primary rounded-pill waves-effect waves-light btn-modal" style="padding: 10px 30px;" id="exportBtn" href="#">
                 Export
             </a>
         </div>
@@ -104,7 +86,8 @@
                 // Konfigurasi grafik Highcharts
                 var chart = Highcharts.chart('container', {
                     chart: {
-                        type: 'pie'
+                        type: 'pie',
+                        backgroundColor: 'rgb(247,247,247)'
                     },
                     title: {
                         text: "Keseluruhan Peserta Sertifikasi Berdasarkan Program Studi"
@@ -181,33 +164,10 @@
     // Inisialisasi grafik pada tahun pertama kali tampil
     updateChart();
 
-
-    // Fungsi untuk menampilkan modal
-    function showModal() {
-        var modal = document.getElementById("myModal");
-        var btn = document.querySelector('.btn');
-
-        // Ketika tombol "Hello" diklik, tampilkan modal
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-
-        // Ketika tombol close di modal diklik, sembunyikan modal
-        var span = document.getElementsByClassName("close")[0];
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // Jika pengguna mengklik di luar modal, tutup modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    }
-
-    // Panggil fungsi untuk menampilkan modal saat dokumen dimuat
-    showModal();
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        var selectedYear = document.getElementById('year').value;
+        window.location.href = '/dashboard/export/excel?year=' + selectedYear;
+    });
 </script>
 
 @endsection
