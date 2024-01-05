@@ -20,6 +20,23 @@
                 ?>
             </select>
         </div>
+        <div class="col-md-3 mb-3">
+            <label for="prodi" class="form-label">Program Studi:</label>
+            <select id="prodi" name="prodi" class="form-select">
+                <option value="">-- Pilih Prodi --</option>
+                <?php
+                // Retrieve program study data from rsm_prodi table
+                use App\Models\rsm_msprodi;
+
+                $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
+
+                // Display options for program study dropdown
+                foreach ($prodiList as $key => $value) {
+                    echo "<option value='$key'>$value</option>";
+                }
+                ?>
+            </select>
+        </div>
 
         <div class="col-md-3 mb-3">
             <a class="btn btn-primary rounded-pill waves-effect waves-light btn-modal" style="padding: 10px 30px;" id="exportBtn" href="#">
@@ -32,8 +49,6 @@
         <div id="container"></div>
     </figure>
 </div>
-
-
 
 <script>
     function updateChart() {
@@ -167,6 +182,11 @@
     document.getElementById('exportBtn').addEventListener('click', function() {
         var selectedYear = document.getElementById('year').value;
         window.location.href = '/dashboard/export/excel?year=' + selectedYear;
+    });
+
+    document.getElementById('prodi').addEventListener('change', function() {
+        var selectedProdi = document.getElementById('prodi').value;
+        window.location.href = `/dashboard/prodi/${selectedProdi}`;
     });
 </script>
 

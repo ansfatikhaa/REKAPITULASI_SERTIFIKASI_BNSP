@@ -41,22 +41,6 @@ class Dashboard extends Controller
         return view("dashboard.home", compact('prodiList', 'chartData', 'currentYear'));
     }
 
-
-    // public function getDataForYear($year)
-    // {
-    //     $pesertaData = rsm_trdetailskema::select(
-    //         'pro_id',
-    //         DB::raw('SUM(dtl_total_peserta) as total_peserta')
-    //     )
-    //         ->whereYear('dtl_tanggal_mulai', $year)
-    //         ->groupBy('pro_id')
-    //         ->get();
-
-    //     $totalPeserta = rsm_trdetailskema::select(DB::raw('SUM(dtl_total_peserta) as total_peserta'))
-    //         ->whereYear('dtl_tanggal_mulai', $year)
-    //         ->first();
-    //     return response()->json($pesertaData);
-    // }
     public function getDataForYear($year)
     {
         $pesertaData = rsm_trdetailskema::select(
@@ -69,6 +53,30 @@ class Dashboard extends Controller
 
         return response()->json($pesertaData);
     }
+
+
+    public function showProdiChart($prodiId)
+    {
+        // Fetch the program name based on the pro_id
+        $program = rsm_msprodi::findOrFail($prodiId);
+        $selectedProgramName = $program->pro_nama;
+    
+        // Fetch data and calculate totals for the chart
+        $prodiData = rsm_trdetailskema::select(
+            DB::raw('SUM(dtl_total_peserta) as total_peserta'),
+            DB::raw('SUM(dtl_kompeten) as total_kompeten'),
+            DB::raw('SUM(dtl_belum_kompeten) as total_belum_kompeten'),
+            DB::raw('SUM(dtl_tidak_hadir) as total_tidak_hadir')
+        )
+            ->where('pro_id', $prodiId)
+            ->get();
+    
+        // Pass $selectedProgramName and $prodiData to the view
+        return view("dashboard.prodi", compact('prodiData', 'selectedProgramName'));
+    }
+    
+
+
 
     public function export_excel(Request $request)
     {

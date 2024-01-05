@@ -159,7 +159,7 @@
                 <i id="menuClose" class="fas fa-times fa-2x iconclose" style="cursor: pointer; display: none;" onclick="changestate('close');"></i>
                 <img id="imgLogo" src="{{ asset('assets/Images/IMG_Logo.png') }}" style="height: 40px; margin-top: -18px; cursor: pointer;" />
                 <div class="panelauthentication">
-                    <b style="font-weight:bold">yosep.setiawan (KARYAWAN)</b><br><span style='font-size: 11px'>Login terakhir: 29 November 2023, 16:04 WIB</span>
+                    <b style="font-weight:bold">{{Session::get('usr_nama')}} ({{Session::get('usr_role')}})</b><br><span style='font-size: 11px'>Login terakhir: 29 November 2023, 16:04 WIB</span>
                 </div>
             </div>
         </div>
@@ -167,7 +167,7 @@
             <div class="col-lg-2 panelmenu" style="background-color: #fff;">
                 <div class="scrollstyle" style="overflow-y: auto; height: 100%;">
                     <ul class="list-group" style="font-size: 14px;">
-                        <li class='list-group-item border border-0 panelauthenticationmobile' style='background-color: #FFFFC0;'>Hai, <b>yosep.setiawan (KARYAWAN)</b></li>
+                        <li class='list-group-item border border-0 panelauthenticationmobile' style='background-color: #FFFFC0;'>Hai, <b>{{Session::get('usr_nama')}} ({{Session::get('usr_role')}})</b></li>
                         <li class='list-group-item border border-0 hovermenu' style='cursor: pointer;'><i class='fas fa-sign-out-alt' style='margin-right: 7px;'></i><b>Logout</b></li>
                         <a href="{{ url('dashboard/home') }}" style="color:black">
                             <li class='list-group-item border border-0 hovermenu @if(request()->is(' dashboard/home')) active @endif' style='cursor: pointer;'><i class='fas fa-home' style='margin-right: 7px;'></i><b>Dashboard</b></li>
