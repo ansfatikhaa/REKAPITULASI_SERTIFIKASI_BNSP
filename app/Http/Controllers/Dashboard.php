@@ -13,7 +13,6 @@ class Dashboard extends Controller
 {
     public function index()
     {
-        // Xvv
         // Mengambil daftar program studi untuk dropdown
         $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
 
@@ -37,11 +36,10 @@ class Dashboard extends Controller
                 'y' => $item->total_peserta
             ];
         }
-
         return view("dashboard.home", compact('prodiList', 'chartData', 'currentYear'));
     }
 
-    public function getDataForYear($year)
+    public function getDataTotalForYear($year)
     {
         $pesertaData = rsm_trdetailskema::select(
             'pro_id',
@@ -54,27 +52,51 @@ class Dashboard extends Controller
         return response()->json($pesertaData);
     }
 
-
-    public function showProdiChart($prodiId)
+    public function showProdiPage($prodiId)
     {
         // Fetch the program name based on the pro_id
         $program = rsm_msprodi::findOrFail($prodiId);
         $selectedProgramName = $program->pro_nama;
     
-        // Fetch data and calculate totals for the chart
-        $prodiData = rsm_trdetailskema::select(
+        // Fetch data peserta berdasarkan prodiId dan tahun terkini
+        $currentYear = date('Y');
+        $pesertaData = rsm_trdetailskema::select(
             DB::raw('SUM(dtl_total_peserta) as total_peserta'),
-            DB::raw('SUM(dtl_kompeten) as total_kompeten'),
-            DB::raw('SUM(dtl_belum_kompeten) as total_belum_kompeten'),
-            DB::raw('SUM(dtl_tidak_hadir) as total_tidak_hadir')
+            DB::raw('SUM(dtl_kompeten) as kompeten'),
+            DB::raw('SUM(dtl_belum_kompeten) as belum_kompeten'),
+            DB::raw('SUM(dtl_tidak_hadir) as tidak_hadir')
         )
             ->where('pro_id', $prodiId)
-            ->get();
+            ->whereYear('dtl_tanggal_mulai', $currentYear)
+            ->first();
     
-        // Pass $selectedProgramName and $prodiData to the view
-        return view("dashboard.prodi", compact('prodiData', 'selectedProgramName'));
+        // Pass $selectedProgramName and $prodiId as separate variables to the view
+        return view("dashboard.prodi", [
+            'selectedProgramName' => $selectedProgramName,
+            'selectedProgramId' => $prodiId, // Assign $prodiId directly to selectedProgramId
+            'pesertaData' => $pesertaData,
+        ]);
     }
     
+
+
+    public function getDataProdiForYear($prodiId, $year)
+    {
+        $pesertaData = rsm_trdetailskema::select(
+            DB::raw('SUM(dtl_total_peserta) as total_peserta'),
+            DB::raw('SUM(dtl_kompeten) as kompeten'),
+            DB::raw('SUM(dtl_belum_kompeten) as belum_kompeten'),
+            DB::raw('SUM(dtl_tidak_hadir) as tidak_hadir')
+        )
+            ->where('pro_id', $prodiId)
+            ->whereYear('dtl_tanggal_mulai', $year)
+            ->first();
+
+        return response()->json($pesertaData);
+    }
+
+
+
 
 
 

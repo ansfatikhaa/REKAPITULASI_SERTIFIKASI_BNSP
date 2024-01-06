@@ -4,7 +4,7 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
-
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <!-- Bagian tampilan konten -->
 <div class="card-body">
     <div class="column">
@@ -54,9 +54,9 @@
     function updateChart() {
         // Mendapatkan nilai tahun yang dipilih dari dropdown
         var selectedYear = document.getElementById('year').value;
-        // Mengambil data dari URL '/getDataForYear/' + selectedYear menggunakan Fetch API
+        // Mengambil data dari URL '/getDataTotalForYear/' + selectedYear menggunakan Fetch API
         // kemudian mengolah data JSON yang diperoleh
-        fetch('/getDataForYear/' + selectedYear)
+        fetch('/getDataTotalForYear/' + selectedYear)
             .then(response => response.json())
             .then(data => {
                 const colorsByProdi = {
@@ -110,6 +110,9 @@
                     subtitle: {
                         text: '',
                         align: 'center'
+                    },
+                    accessibility: {
+                        enabled: true // Set accessibility enabled to true
                     },
                     plotOptions: {
                         series: {

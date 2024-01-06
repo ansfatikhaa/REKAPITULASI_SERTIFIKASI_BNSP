@@ -5,10 +5,9 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
-
 <div class="card-body">
     <div class="column">
-        <!-- Tampilkan nama program studi yang dipilih -->
+        <!-- Display the selected program name -->
         <h3>{{ $selectedProgramName }}</h3>
 
         <div class="col-md-2 mb-2">
@@ -17,17 +16,10 @@
                 @php
                 $currentYear = date('Y');
                 for ($i = $currentYear; $i >= $currentYear - 5; $i--) {
-                    echo "<option value='$i'>$i</option>";
+                echo "<option value='$i'>$i</option>";
                 }
                 @endphp
             </select>
-        </div>
-
-        <!-- Button for triggering the data fetching and chart rendering -->
-        <div class="col-md-3 mb-3">
-            <a class="btn btn-primary rounded-pill waves-effect waves-light btn-modal" style="padding: 10px 30px;" id="exportBtn" href="#">
-                Export
-            </a>
         </div>
     </div>
 
@@ -41,31 +33,41 @@
 <script>
     function updateChart() {
         var selectedYear = document.getElementById('year').value;
-        var selectedProdi = "{{ $prodiData[0]->pro_id }}"; // Use the selected pro_id here
 
-        fetch(`/dashboard/prodi/${selectedProdi}`)
+        var prodiId = "{{ $selectedProgramId }}"; // Get the selected program ID
+
+        fetch(`/getDataProdiForYear/${prodiId}/${selectedYear}`)
             .then(response => response.json())
             .then(data => {
-                var categories = ['Total Peserta', 'Kompeten', 'Belum Kompeten', 'Tidak Hadir'];
+                console.log(data);
+                var categories = {
+                    'total_peserta': 'Total Peserta',
+                    'kompeten': 'Kompeten',
+                    'belum_kompeten': 'Belum Kompeten',
+                    'tidak_hadir': 'Tidak Hadir'
+                };
                 var dataValues = [];
-                
-                categories.forEach(category => {
-                    var sum = 0;
-                    data.forEach(item => {
-                        sum += parseInt(item[category.toLowerCase()]);
+                var colors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c']; // Define colors for columns
+
+                // Retrieve data from the server
+                Object.keys(categories).forEach((category, index) => {
+                    dataValues.push({
+                        y: parseInt(data[category]),
+                        color: colors[index] // Assign a color from the defined list
                     });
-                    dataValues.push(sum);
                 });
 
+                // Create the chart
                 var barChart = Highcharts.chart('barChartContainer', {
                     chart: {
-                        type: 'column'
+                        type: 'column',
+                        backgroundColor: 'rgb(247,247,247)'
                     },
                     title: {
                         text: 'Statistik Program Studi'
                     },
                     xAxis: {
-                        categories: categories,
+                        categories: Object.values(categories),
                         crosshair: true
                     },
                     yAxis: {
@@ -74,8 +76,11 @@
                             text: 'Jumlah'
                         }
                     },
+                    legend: {
+                        enabled: false // Disable the legend
+                    },
                     series: [{
-                        name: 'Program Studi',
+                        name: 'Data',
                         data: dataValues
                     }]
                 });
@@ -85,17 +90,11 @@
             });
     }
 
-    // Event listener for dropdown changes
+    // Event listener for dropdown change
     document.getElementById('year').addEventListener('change', updateChart);
 
-    // Initial chart rendering on page load
+    // Render the chart when the page loads
     updateChart();
-
-    // Button click event to export data
-    document.getElementById('exportBtn').addEventListener('click', function() {
-        var selectedYear = document.getElementById('year').value;
-        window.location.href = `/dashboard/export/excel?year=${selectedYear}`;
-    });
 </script>
 
 @endsection

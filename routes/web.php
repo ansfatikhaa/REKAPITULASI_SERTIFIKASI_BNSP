@@ -15,11 +15,12 @@ Route::get('/', function () {
 Route::get('dashboard/home', [Dashboard::class, 'index'])->name('dashboard.home');
 
 // Route untuk mendapatkan data peserta berdasarkan tahun
-Route::get('/getDataForYear/{year}', [Dashboard::class, 'getDataForYear'])->name('dashboard.getDataForYear');
+Route::get('/getDataTotalForYear/{year}', [Dashboard::class, 'getDataTotalForYear'])->name('dashboard.getDataTotalForYear');
 
 Route::get('dashboard/export/excel', [Dashboard::class, 'export_excel'])->name('dashboard.export.excel');
 // Tambahkan route untuk menampilkan dashboard prodi
-Route::get('/dashboard/prodi/{prodiId}', [Dashboard::class, 'showProdiChart'])->name('dashboard.prodi');
+Route::get('/dashboard/prodi/{prodiId}', [Dashboard::class, 'showProdiPage'])->name('dashboard.prodi');
+Route::get('/getDataProdiForYear/{pro_id}/{year}', [Dashboard::class, 'getDataProdiForYear'])->name('dashboard.getDataProdiForYear');
 
 Route::get('/login/login', [Login::class, 'index']);
 Route::post('/login/masuk', [Login::class, 'loginPost'])->name('login.masuk');

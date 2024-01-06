@@ -21,7 +21,7 @@
     <link href="{{ asset('assets/Plugins/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/Plugins/fontawesome-free-5.11.2-web/css/fontawesome.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/Plugins/fontawesome-free-5.11.2-web/css/solid.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('assets/Content/themes/base/jquery-ui.min.css') }}" rel="stylesheet" />
+    <!-- <link href="{{ asset('assets/Content/themes/base/jquery-ui.min.css') }}" rel="stylesheet" /> -->
     <link href="{{ asset('assets/Styles/Style.css') }}" rel="stylesheet" />
 
     <script src="{{ asset('assets/Scripts/jquery-3.4.1.min.js') }}"></script>
@@ -126,28 +126,6 @@
             $(input).text('Mohon tunggu..');
         }
 
-        $(document).ready(function() {
-
-            $("#selectNama").select2({
-                placeholder: 'Pilih Provinsi',
-                ajax: {
-                    url: "",
-                    processResults: function({
-                        data
-                    }) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    id: item.id,
-                                    text: item.name
-                                }
-                            })
-                        }
-                    }
-                }
-            });
-
-        });
     </script>
 </head>
 
@@ -205,9 +183,9 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('lib/jquery/dist/jquery.min.js') }}"></script>
-    <script src="{{ asset('lib/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('js/site.js') }}" asp-append-version="true"></script>
+    <!-- <script src="{{ asset('lib/jquery/dist/jquery.min.js') }}"></script> -->
+    <!-- <script src="{{ asset('lib/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script> -->
+    <!-- <script src="{{ asset('js/site.js') }}" asp-append-version="true"></script> -->
 
 </body>
 
