@@ -9,7 +9,7 @@ class rsm_trdetailskema extends Model
 {
     use HasFactory;
 
-    protected $table = 'rsm_trdetailskema'; 
+    protected $table = 'rsm_trdetailskema';
     protected $primaryKey = 'dtl_id';
     public $timestamps = false;
     protected $fillable = [
@@ -21,6 +21,10 @@ class rsm_trdetailskema extends Model
         'dtl_kompeten',
         'dtl_belum_kompeten',
         'dtl_tidak_hadir',
+        'dtl_created_by',
+        'dtl_created_date',
+        'dtl_modif_by',
+        'dtl_modif_date',
     ];
 
     public function skema()
@@ -33,4 +37,3 @@ class rsm_trdetailskema extends Model
         return $this->belongsTo(rsm_msprodi::class, 'pro_id', 'pro_id');
     }
 }
-

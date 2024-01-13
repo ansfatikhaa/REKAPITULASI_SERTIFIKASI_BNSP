@@ -176,9 +176,6 @@
                     <main role="main" class="pb-3">
                         @yield('content')
                     </main>
-                    <br />
-                    <br />
-                    <br />
                 </div>
             </div>
         </div>

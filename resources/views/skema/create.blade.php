@@ -90,7 +90,6 @@
         background-color: #e9ecef;
         /* Ubah warna saat dihover */
     }
-    
 </style>
 <div class="row">
     @if (session('successMessage'))
@@ -116,13 +115,13 @@
                 <h5 style="margin: 0;">Tambah Skema</h5>
             </div>
             <div class="card-body" style="border-radius: 0%;">
-                <form action="{{ route('skema.store') }}" method="post">
+                <form action="{{ route('skema.store') }}" method="post" autocomplete="off">
                     @csrf
                     <div class="row">
                         <div class="col-lg-3 form-group">
                             <br>
                             <label style="font-weight: bold;" for="skema_input">Skema<b style="color: red">*</b></label><br>
-                            <input type="text" id="skema_input" name="skema_input" class="form-control" placeholder="Pilih atau ketik nama skema" required>
+                            <input type="text" id="skema_input" name="skema_input" class="form-control" placeholder="Pilih atau ketik nama skema" required autofocus maxlength="100">
                             @error('skema_input')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -138,7 +137,7 @@
                         <div class="col-lg-3 form-group">
                             <br>
                             <label style="font-weight: bold;" for="pro_id">Prodi<b style="color: red">*</b></label><br>
-                            <select class="form-control" name="pro_id" required>
+                            <select class="form-control" id="pro_id" name="pro_id" required>
                                 <option value="">Pilih Prodi</option>
                                 @foreach($prodis as $prodi)
                                 <option value="{{ $prodi->pro_id }}">{{ $prodi->pro_nama }}</option>
@@ -153,7 +152,7 @@
                         <div class="col-lg-3 form-group">
                             <br>
                             <label style="font-weight: bold;" for="dtl_tanggal_mulai">Tanggal Mulai<b style="color: red">*</b></label><br>
-                            <input class="form-control" name="dtl_tanggal_mulai" type="date" style="display: inline;" required>
+                            <input class="form-control" id="dtl_tanggal_mulai" name="dtl_tanggal_mulai" type="date" style="display: inline;" required>
                             @error('dtl_tanggal_mulai')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -163,7 +162,7 @@
                         <div class="col-lg-3 form-group">
                             <br>
                             <label style="font-weight: bold;" for="dtl_tanggal_berakhir">Tanggal Berakhir<b style="color: red">*</b></label><br>
-                            <input class="form-control" name="dtl_tanggal_berakhir" type="date" style="display: inline;" required>
+                            <input class="form-control" id="dtl_tanggal_berakhir" name="dtl_tanggal_berakhir" type="date" style="display: inline;" required>
                             @error('dtl_tanggal_berakhir')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -173,7 +172,7 @@
                         <div class="col-lg-3 form-group">
                             <br>
                             <label style="font-weight: bold;" for="dtl_total_peserta">Total Peserta<b style="color: red">*</b></label><br>
-                            <input class="form-control" name="dtl_total_peserta" type="number" style="display: inline;" required>
+                            <input class="form-control" name="dtl_total_peserta" type="number" style="display: inline;" required min="0">
                             @error('dtl_total_peserta')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -204,6 +203,10 @@
                             <span class="text-danger"></span>
                             <div class="mb-3"></div>
                         </div>
+                        <input type="hidden" name="dtl_created_by" value="{{Session::get('usr_nama')}}">
+                        <input type="hidden" name="dtl_created_date" value="{{ \Carbon\Carbon::now() }}">
+                        <input type="hidden" name="skm_created_by" value="{{Session::get('usr_nama')}}">
+                        <input type="hidden" name="skm_created_date" value="{{ \Carbon\Carbon::now() }}">
 
                     </div>
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -211,16 +214,18 @@
             </div>
 
             <script>
-                document.addEventListener('click', function(event) {
+                document.addEventListener('DOMContentLoaded', function() {
                     const skemaInput = document.getElementById('skema_input');
                     const skemaDropdown = document.getElementById('skema_dropdown');
                     const dropdownItems = document.querySelectorAll('.dropdown-item');
 
-                    const isClickInsideSkema = skemaInput.contains(event.target) || skemaDropdown.contains(event.target);
+                    document.addEventListener('click', function(event) {
+                        const isClickInsideSkema = skemaInput.contains(event.target) || skemaDropdown.contains(event.target);
 
-                    if (!isClickInsideSkema) {
-                        skemaDropdown.style.display = 'none';
-                    }
+                        if (!isClickInsideSkema) {
+                            skemaDropdown.style.display = 'none';
+                        }
+                    });
 
                     skemaInput.addEventListener('focus', function() {
                         skemaDropdown.style.display = 'block';
@@ -241,16 +246,9 @@
 
                     dropdownItems.forEach(item => {
                         item.addEventListener('click', function() {
-                            // Memasukkan nama skema ke input
                             skemaInput.value = item.textContent;
-                            // Mengambil ID skema dari data attribute dan menyimpannya ke dalam input tersembunyi
                             const skemaId = item.getAttribute('data-skm-id');
                             document.getElementById('skema_id_input').value = skemaId;
-
-                            // Cetak nilai ID skema ke konsol untuk memastikan bahwa nilai ID terambil dengan benar
-                            console.log('ID Skema yang dipilih:', skemaId);
-
-                            // Menyembunyikan dropdown setelah memilih
                             skemaDropdown.style.display = 'none';
                         });
                     });

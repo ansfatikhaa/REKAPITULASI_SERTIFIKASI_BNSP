@@ -7,49 +7,53 @@
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <!-- Bagian tampilan konten -->
 <div class="card-body">
-    <div class="column">
-        <!-- Dropdown for selecting year -->
-        <div class="col-md-2 mb-2">
-            <label for="year" class="form-label">Tahun:</label>
-            <select id="year" name="year" class="form-select">
-                <?php
-                $currentYear = date('Y');
-                for ($i = $currentYear; $i >= $currentYear - 5; $i--) {
-                    echo "<option value='$i'>$i</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div class="col-md-3 mb-3">
-            <label for="prodi" class="form-label">Program Studi:</label>
-            <select id="prodi" name="prodi" class="form-select">
-                <option value="">-- Pilih Prodi --</option>
-                <?php
-                // Retrieve program study data from rsm_prodi table
-                use App\Models\rsm_msprodi;
+    <div class="container">
+        <div class="row">
+            <!-- Column for input, dropdown, and buttons -->
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label for="year" class="form-label">Tahun:</label>
+                    <select id="year" name="year" class="form-select">
+                        <?php
+                        $currentYear = date('Y');
+                        for ($i = $currentYear; $i >= $currentYear - 4; $i--) {
+                            echo "<option value='$i'>$i</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="prodi" class="form-label">Program Studi:</label>
+                    <select id="prodi" name="prodi" class="form-select">
+                        <option value="">-- Pilih Prodi --</option>
+                        <?php
+                        // Retrieve program study data from rsm_prodi table
+                        use App\Models\rsm_msprodi;
 
-                $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
+                        $prodiList = rsm_msprodi::pluck('pro_nama', 'pro_id');
 
-                // Display options for program study dropdown
-                foreach ($prodiList as $key => $value) {
-                    echo "<option value='$key'>$value</option>";
-                }
-                ?>
-            </select>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <a class="btn btn-primary rounded-pill waves-effect waves-light btn-modal" style="padding: 10px 30px;" id="exportBtn" href="#">
-                Export
-            </a>
+                        // Display options for program study dropdown
+                        foreach ($prodiList as $key => $value) {
+                            echo "<option value='$key'>$value</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div>
+                    <a class="btn btn-primary rounded-pill waves-effect waves-light btn-modal" style="padding: 10px 30px;" id="exportBtn" href="#">
+                        Export
+                    </a>
+                </div>
+            </div>
+            <!-- Column for Highcharts figure -->
+            <div class="col-md-9">
+                <figure class="highcharts-figure">
+                    <div id="container"></div>
+                </figure>
+            </div>
         </div>
     </div>
-
-    <figure class="highcharts-figure">
-        <div id="container"></div>
-    </figure>
 </div>
-
 <script>
     function updateChart() {
         // Mendapatkan nilai tahun yang dipilih dari dropdown
@@ -124,7 +128,7 @@
                             dataLabels: {
                                 enabled: true,
                                 formatter: function() {
-                                    return '<b>' + this.point.name + '<br>' + this.percentage.toFixed(1) + '%';
+                                    return '<b>' + this.point.name + '<br>' + this.point.y + '</b>';
                                 },
                                 distance: -30,
                                 color: 'white'
@@ -154,6 +158,11 @@
                             return prodiNames[this.name.split(' ')[1]] || this.name;
                         }
                     },
+                    tooltip: {
+                        formatter: function() {
+                            return '<b>' + this.point.name + '</b><br>' + this.point.percentage.toFixed(1) + '%';
+                        }
+                    },
                     series: [{
                         name: "Jumlah Peserta",
                         colorByPoint: true,
@@ -168,7 +177,7 @@
                 chart.setSubtitle({
                     text: '<span style="font-size: 24px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">' + selectedYear + '</span>',
                     verticalAlign: 'middle',
-                    y: centerY - 100
+                    y: centerY - 125
                 });
 
             })

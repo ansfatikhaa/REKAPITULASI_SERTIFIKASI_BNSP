@@ -14,7 +14,7 @@ class DetailSkemaController extends Controller
         $detail = rsm_trdetailskema::findOrFail($dtl_id);
         $prodis = rsm_msprodi::all();
         $skemas = rsm_msskema::all();
-        return view('detailskema.edit', compact('detail', 'prodis','skemas'));
+        return view('detailskema.edit', compact('detail', 'prodis', 'skemas'));
     }
 
     public function update(Request $request, $dtl_id)
@@ -28,6 +28,8 @@ class DetailSkemaController extends Controller
             'dtl_kompeten' => 'required|integer',
             'dtl_belum_kompeten' => 'required|integer',
             'dtl_tidak_hadir' => 'required|integer',
+            'dtl_modif_by' => 'required|string',
+            'dtl_modif_date' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         $skema = rsm_trdetailskema::findOrFail($dtl_id);
@@ -39,6 +41,8 @@ class DetailSkemaController extends Controller
         $skema->dtl_kompeten = $request->input('dtl_kompeten');
         $skema->dtl_belum_kompeten = $request->input('dtl_belum_kompeten');
         $skema->dtl_tidak_hadir = $request->input('dtl_tidak_hadir');
+        $skema->dtl_modif_by = $request->input('dtl_modif_by');
+        $skema->dtl_modif_date = $request->input('dtl_modif_date');
 
         $skema->save();
         $skm_id = session('skm_id');

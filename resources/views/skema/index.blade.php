@@ -4,8 +4,10 @@
     .table,
     .table th,
     .table td {
-        font-size: 10px; /* Ubah nilai sesuai keinginan Anda */
+        font-size: 10px;
+        /* Ubah nilai sesuai keinginan Anda */
     }
+
     .table-container {
         overflow-x: auto;
     }
@@ -39,17 +41,19 @@
         overflow-x: auto;
         /* Tampilkan scroll horizontal jika diperlukan */
     }
-    
+
     /* Atur ukuran tombol */
     .btn-primary {
-        padding: 5px 20px; /* Sesuaikan padding sesuai kebutuhan */
-        font-size: 12px; /* Sesuaikan ukuran font sesuai keinginan Anda */
-    }
-    .form-control{
-        padding: 10px; 
-        font-size: 14px;
+        padding: 8px 16px;
+        /* Sesuaikan padding sesuai kebutuhan */
+        font-size: 12px;
+        /* Sesuaikan ukuran font sesuai keinginan Anda */
     }
 
+    .form-control {
+        padding: px;
+        font-size: 14px;
+    }
 </style>
 <div class="row">
     @if (session('successMessage'))
@@ -62,14 +66,20 @@
 
     <div class="col-md-12 table-container">
         <form method="GET" action="{{ route('skema.index') }}">
-            <div class="md-form input-group mb-4" style="margin-top: 0px; margin-bottom: 15px !important;">
-                <a class="btn btn-primary rounded-pill waves-effect waves-light" href="{{ route('skema.create') }}" style="padding: 10px 30px;">
-                    <i class="fas fa-plus"></i>
-                </a>
-                <input name="search" type="text" id="MainContent_txtCari" class="form-control form-cari" placeholder="Cari" />
-                <button type="submit" class="btn btn-primary rounded-pill waves-effect waves-light">
-                    Search
-                </button>
+            <div class="row">
+                <div class="col-md-2 mb-3">
+                    <a class="btn btn-primary rounded-pill waves-effect waves-light" href="{{ route('skema.create') }}">
+                        <i class="fas fa-plus"></i> Tambah
+                    </a>
+                </div>
+                <div class="col-md-8 mb-3">
+                    <input name="search" type="text" id="MainContent_txtCari" class="form-control form-cari" placeholder="Cari" />
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button type="submit" class="btn btn-primary rounded-pill waves-effect waves-light btn-block">
+                        Search
+                    </button>
+                </div>
             </div>
         </form>
         @if (session('success'))
@@ -82,9 +92,23 @@
         @endif
 
         <div class="card">
-            <div class="card-header">
-                <b>DATA SKEMA</b>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <b>DATA SKEMA</b>
+                </div>
+
+                <div style="display: flex; align-items: center;">
+                    <label for="showby" class="form-label" style="margin-right: 10px;">Tampilkan berdasarkan:</label>
+                    <select id="showby" name="showby" class="form-select">
+                        <option value="skema">Skema</option>
+                        <option value="prodi">Prodi</option>
+                        <option value="tahun">Tahun</option>
+                    </select>
+                </div>
             </div>
+
+
+
             <div class="card-body" style="border-radius: 0%; padding:30 30 30 30;">
                 <div class="table-responsive">
                     <table class="table table-sm table-hover table-bordered">
@@ -113,7 +137,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $data->links() }} <!-- Menambahkan pagination links -->
                 </div>
             </div>
         </div>

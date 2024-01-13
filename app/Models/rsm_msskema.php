@@ -14,6 +14,8 @@ class rsm_msskema extends Model
     public $timestamps = false;
     protected $fillable = [
         'skm_nama',
+        'skm_created_by',
+        'skm_modif_by',
     ];
 
     public function details()

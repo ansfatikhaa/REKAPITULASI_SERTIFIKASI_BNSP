@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExportData;
+use App\Exports\ExportDataProdi;
 use Illuminate\Http\Request;
 use App\Models\rsm_trdetailskema;
 use App\Models\rsm_msprodi;
+use App\Models\rsm_msskema;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -57,7 +59,7 @@ class Dashboard extends Controller
         // Fetch the program name based on the pro_id
         $program = rsm_msprodi::findOrFail($prodiId);
         $selectedProgramName = $program->pro_nama;
-    
+
         // Fetch data peserta berdasarkan prodiId dan tahun terkini
         $currentYear = date('Y');
         $pesertaData = rsm_trdetailskema::select(
@@ -69,15 +71,15 @@ class Dashboard extends Controller
             ->where('pro_id', $prodiId)
             ->whereYear('dtl_tanggal_mulai', $currentYear)
             ->first();
-    
+
         // Pass $selectedProgramName and $prodiId as separate variables to the view
         return view("dashboard.prodi", [
             'selectedProgramName' => $selectedProgramName,
-            'selectedProgramId' => $prodiId, // Assign $prodiId directly to selectedProgramId
+            'selectedProgramId' => $prodiId, 
             'pesertaData' => $pesertaData,
         ]);
     }
-    
+
 
 
     public function getDataProdiForYear($prodiId, $year)
@@ -95,8 +97,46 @@ class Dashboard extends Controller
         return response()->json($pesertaData);
     }
 
+    public function showSkemaPage($skemaId)
+    {
+        // Fetch the skema name based on the skm_id
+        $skema = rsm_msskema::findOrFail($skemaId);
+        $selectedSkemaName = $skema->skm_nama;
 
+        $currentYear = date('Y');
+        $pesertaData = rsm_trdetailskema::select(
+            DB::raw('SUM(dtl_total_peserta) as total_peserta'),
+            DB::raw('SUM(dtl_kompeten) as kompeten'),
+            DB::raw('SUM(dtl_belum_kompeten) as belum_kompeten'),
+            DB::raw('SUM(dtl_tidak_hadir) as tidak_hadir')
+        )
+            ->where('skm_id', $skemaId)
+            ->whereYear('dtl_tanggal_mulai', $currentYear)
+            ->first();
 
+        // Pass $selectedProgramName and $skemaId as separate variables to the view
+        return view("dashboard.skema", [
+            'selectedSkemaName' => $selectedSkemaName,
+            'selectedSkemaId' => $skemaId, // Assign $skemaId directly to selectedSkemaId
+            'pesertaData' => $pesertaData,
+        ]);
+    }
+
+    public function getDataSkemaForProdi($skemaId, $date)
+    {
+        $pesertaData = rsm_trdetailskema::select(
+            DB::raw('SUM(dtl_total_peserta) as total_peserta'),
+            DB::raw('SUM(dtl_kompeten) as kompeten'),
+            DB::raw('SUM(dtl_belum_kompeten) as belum_kompeten'),
+            DB::raw('SUM(dtl_tidak_hadir) as tidak_hadir')
+        )
+            ->where('skm_id', $skemaId)
+            ->where('dtl_tanggal_mulai', $date)
+            ->first();
+
+        return response()->json($pesertaData);
+    }
+   
 
 
 
@@ -104,5 +144,14 @@ class Dashboard extends Controller
     {
         $selectedYear = $request->input('year'); // Mendapatkan tahun yang dipilih dari dropdown
         return Excel::download(new ExportData($selectedYear), "Data_Sertifikasi_$selectedYear.xlsx");
+    }
+
+    public function export_excel_prodi($prodiId, Request $request)
+    {
+        $selectedYear = $request->input('year'); // Mendapatkan tahun yang dipilih dari dropdown
+
+        $filename = "Data_Program_Studi_{$selectedYear}_Prodi_{$prodiId}.xlsx";
+
+        return Excel::download(new ExportDataProdi($prodiId, $selectedYear), $filename);
     }
 }

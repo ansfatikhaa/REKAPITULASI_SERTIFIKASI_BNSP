@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\SkemaStoreRequest;
 
 use App\Models\rsm_msskema;
 use App\Models\rsm_msprodi;
@@ -46,14 +45,22 @@ class SkemaController extends Controller
 
     public function showDetails($skm_id)
     {
-        // Mengambil data skema berdasarkan ID yang dipilih
-        $skema = rsm_msskema::findOrFail($skm_id);
-
-        // Simpan skm_id ke dalam session
-        session(['skm_id' => $skm_id]);
-
-        // Mengirim data detail skema yang sesuai ke view 'detailskema.index'
-        return view('detailskema.index', ['data' => $skema->details]);
+        try {
+            // Mengambil data skema berdasarkan ID yang dipilih
+            $skema = rsm_msskema::findOrFail($skm_id);
+    
+            // Simpan skm_id ke dalam session
+            session(['skm_id' => $skm_id]);
+    
+            // Mengirim data detail skema yang sesuai ke view 'detailskema.index'
+            return view('detailskema.index', [
+                'data' => $skema->details,  // Assuming details is a relationship in rsm_msskema model
+                'selectedSkemaName' => $skema->skm_nama,
+            ]);
+        } catch (\Exception $e) {
+            // Handle the exception, for example, show an error message or redirect to an error page.
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
     }
 
 
@@ -64,7 +71,7 @@ class SkemaController extends Controller
         return view('skema.create', compact('prodis', 'skemas'));
     }
 
-    public function store(SkemaStoreRequest $request)
+    public function store(Request $request)
     {
         try {
             $existingSkema = rsm_msskema::where('skm_nama', $request->skema_input)->firstOrFail();
@@ -79,6 +86,8 @@ class SkemaController extends Controller
                 'dtl_kompeten' => $request->dtl_kompeten,
                 'dtl_belum_kompeten' => $request->dtl_belum_kompeten,
                 'dtl_tidak_hadir' => $request->dtl_tidak_hadir,
+                'dtl_created_by' => $request->dtl_created_by,
+                'dtl_created_date' => $request->dtl_created_date,
             ]);
 
             return redirect()->route('skema.index')->with('success', 'Detail skema berhasil disimpan!');
@@ -86,6 +95,8 @@ class SkemaController extends Controller
             // Skema belum ada, buat skema baru dan simpan detail skema
             $skema = rsm_msskema::create([
                 'skm_nama' => $request->skema_input,
+                'skm_created_by' => $request->skm_created_by,
+                'skm_created_date' => $request->skm_created_date,
             ]);
 
             rsm_trdetailskema::create([
@@ -97,9 +108,13 @@ class SkemaController extends Controller
                 'dtl_kompeten' => $request->dtl_kompeten,
                 'dtl_belum_kompeten' => $request->dtl_belum_kompeten,
                 'dtl_tidak_hadir' => $request->dtl_tidak_hadir,
+                'dtl_created_by' => $request->dtl_created_by,
+                'dtl_created_date' => $request->dtl_created_date,
             ]);
 
             return redirect()->route('skema.index')->with('success', 'Skema dan detail skema berhasil disimpan!');
         }
     }
+
+
 }

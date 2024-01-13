@@ -22,15 +22,14 @@ class SkemaStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'skema_input' => 'required', // Menyatakan field skm_nama harus unik di tabel rsm_msskema
+            'skema_input' => 'required',
             'pro_id' => 'required|integer',
             'dtl_tanggal_mulai' => 'required|date',
             'dtl_tanggal_berakhir' => 'required|date',
             'dtl_total_peserta' => 'required|integer',
-            'dtl_kompeten' => 'required|integer',
-            'dtl_belum_kompeten' => 'required|integer',
-            'dtl_tidak_hadir' => 'required|integer',
-            // Tambahkan aturan validasi lainnya jika diperlukan
+            'dtl_kompeten' => 'required|integer|lte:dtl_total_peserta', // Ensure dtl_kompeten is less than or equal to dtl_total_peserta
+            'dtl_belum_kompeten' => 'required|integer|lte:dtl_total_peserta', // Ensure dtl_belum_kompeten is less than or equal to dtl_total_peserta
+            'dtl_tidak_hadir' => 'required|integer|lte:dtl_total_peserta',            // Tambahkan pesan kesalahan lain sesuai kebutuhan
         ];
     }
 
@@ -43,7 +42,6 @@ class SkemaStoreRequest extends FormRequest
     {
         return [
             'skema_input.required' => 'Nama skema diperlukan',
-            //'skema_input.unique' => 'Nama skema harus unik',
             'pro_id.required' => 'Pilih Prodi',
             'pro_id.integer' => 'Prodi harus berupa bilangan bulat',
             'dtl_tanggal_mulai.required' => 'Tanggal mulai diperlukan',
@@ -54,11 +52,13 @@ class SkemaStoreRequest extends FormRequest
             'dtl_total_peserta.integer' => 'Total peserta harus berupa bilangan bulat',
             'dtl_kompeten.required' => 'Jumlah peserta kompeten diperlukan',
             'dtl_kompeten.integer' => 'Jumlah peserta kompeten harus berupa bilangan bulat',
+            'dtl_kompeten.lte' => 'Jumlah peserta kompeten tidak boleh lebih dari total peserta',
             'dtl_belum_kompeten.required' => 'Jumlah peserta belum kompeten diperlukan',
             'dtl_belum_kompeten.integer' => 'Jumlah peserta belum kompeten harus berupa bilangan bulat',
+            'dtl_belum_kompeten.lte' => 'Jumlah peserta belum kompeten tidak boleh lebih dari total peserta',
             'dtl_tidak_hadir.required' => 'Jumlah peserta tidak hadir diperlukan',
             'dtl_tidak_hadir.integer' => 'Jumlah peserta tidak hadir harus berupa bilangan bulat',
-            // Tambahkan pesan kesalahan lain sesuai kebutuhan
+            'dtl_tidak_hadir.lte' => 'Jumlah peserta tidak hadir tidak boleh lebih dari total peserta',
         ];
     }
 }

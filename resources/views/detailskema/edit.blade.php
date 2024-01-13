@@ -97,6 +97,9 @@
                 <div class="mb-3"></div>
             </div>
 
+            <input type="hidden" name="dtl_modif_by" value="{{Session::get('usr_nama')}}">
+            <input type="hidden" name="dtl_modif_date" value="{{ \Carbon\Carbon::now() }}">
+
         </div>
         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
     </form>
